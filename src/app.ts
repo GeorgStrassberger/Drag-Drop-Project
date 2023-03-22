@@ -1,4 +1,45 @@
 console.log("app.ts works!");
+// Project State Management
+
+class ProjectState {
+    private listeners: any[] = [];
+    private projects: any[] = [];
+    private static instance: ProjectState;
+
+    private constructor() {
+
+    }
+
+    static getInstace(): ProjectState {
+        if (this.instance) {
+            return this.instance;
+        }
+        this.instance = new ProjectState();
+        return this.instance;
+    }
+
+    addListener(listenerFn: Function): void {
+        this.listeners.push(listenerFn);
+    }
+
+    addProject(title: string, description: string, numOfPeople: number) {
+        const newProject = {
+            id: Math.random().toString(), // only for demo
+            title: title,
+            description: description,
+            people: numOfPeople,
+        };
+        this.projects.push(newProject);
+        for (const listenerFn of this.listeners) {
+            listenerFn(this.projects.slice()); //get a copy of the array;
+        }
+    }
+}
+
+// Globale Instanz
+// to garentiet to work always with the exact same object and we will only have 1 object all the time, in the entire application
+const projectState = ProjectState.getInstace();
+
 // Validation
 interface Validatable {
     value: string | number;
@@ -53,6 +94,8 @@ class ProjectList {
     templateElement: HTMLTemplateElement;
     hostElement: HTMLDivElement;
     element: HTMLElement;
+    assignedProjects: any[];
+
     // shotcut - add accessor in front of a parameter to automaticly create a same name property to store the value equal to the named parameter
     // with a litaral type
     constructor(private type: 'active' | 'finished') {
@@ -60,6 +103,7 @@ class ProjectList {
             "project-list"
         )! as HTMLTemplateElement;
         this.hostElement = document.getElementById("app")! as HTMLDivElement;
+        this.assignedProjects = [];
 
         const importedNode: DocumentFragment = document.importNode(
             this.templateElement.content,
@@ -67,8 +111,23 @@ class ProjectList {
         );
         this.element = importedNode.firstElementChild as HTMLElement;
         this.element.id = `${this.type}-projects`;
+
+        projectState.addListener((projects: any[]) => {
+            this.assignedProjects = projects;
+            this.renderProjects();
+        });
+
         this.attach();
         this.reanderContent();
+    }
+
+    private renderProjects() {
+        const listEl = document.getElementById(`${this.type}-projects-list`)! as HTMLUListElement;
+        for (const prjItem of this.assignedProjects) {
+            const listItem = document.createElement('li');
+            listItem.textContent = prjItem.title;
+            listEl.appendChild(listItem);
+        }
     }
 
     private reanderContent(): void {
@@ -80,8 +139,6 @@ class ProjectList {
     private attach(): void {
         this.hostElement.insertAdjacentElement("beforeend", this.element);
     }
-
-
 }
 
 
@@ -170,7 +227,8 @@ class ProjectInput {
         const userInput = this.gatherUserInput();
         if (Array.isArray(userInput)) {
             const [title, desc, people] = userInput;
-            console.log(title, desc, people);
+            // create the new Project
+            projectState.addProject(title, desc, people);
             this.clearInputs();
         }
     }
