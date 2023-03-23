@@ -6,7 +6,7 @@ interface Draggable {
 
 interface DragTarget {
     dragOverHandler(event: DragEvent): void;
-    dragHandler(event: DragEvent): void;
+    drogHandler(event: DragEvent): void;
     dragLeaveHandler(event: DragEvent): void;
 }
 
@@ -212,7 +212,7 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> implements 
 }
 
 // ProjectList Class
-class ProjectList extends Component<HTMLDivElement, HTMLElement> {
+class ProjectList extends Component<HTMLDivElement, HTMLElement> implements DragTarget {
     assignedProjects: Project[];
 
     // shotcut - add accessor in front of a parameter to automaticly create a same name property to store the value equal to the named parameter
@@ -224,7 +224,26 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
         this.renderContent();
     }
 
+    @autobind
+    dragOverHandler(_: DragEvent): void {
+        const listEl = this.element.querySelector('ul')!;
+        listEl.classList.add('droppable');
+    }
+    drogHandler(_: DragEvent): void {
+
+    }
+
+    @autobind
+    dragLeaveHandler(_: DragEvent): void {
+        const listEl = this.element.querySelector('ul')!;
+        listEl.classList.remove('droppable');
+    }
+
     configure(): void {
+        this.element.addEventListener('dragover', this.dragOverHandler);
+        this.element.addEventListener('drop', this.drogHandler);
+        this.element.addEventListener('dragleave', this.dragLeaveHandler);
+
         projectState.addListener((projects: Project[]) => {
             const relevantProjects = projects.filter((prj) => {
                 if (this.type === "active") {
