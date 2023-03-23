@@ -41,7 +41,7 @@ button {
   background: #ff0062;
   border: 1px solid #ff0062;
   cursor: pointer;
-  color: white;
+  color: #ffffff;
   padding: 0.75rem 1rem;
 }
 
@@ -78,7 +78,7 @@ button:active {
 
 .projects h2 {
   margin: 0;
-  color: white;
+  color: #ffffff;
 }
 
 .projects ul {
@@ -91,6 +91,7 @@ button:active {
   box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.26);
   padding: 1rem;
   margin: 1rem;
+  background-color: #ffffff;
 }
 
 .projects li h2 {
