@@ -1,16 +1,21 @@
 {
-	"dependencies": {
-		"typescript": "^4.9.5"
-	},
 	"name": "drag-drop",
 	"version": "1.0.0",
 	"main": "index.js",
 	"devDependencies": {
-		"lite-server": "^2.6.1"
+		"clean-webpack-plugin": "^4.0.0",
+		"lite-server": "^2.6.1",
+		"ts-loader": "^9.4.2",
+		"typescript": "^5.0.2",
+		"webpack": "^5.76.3",
+		"webpack-cli": "^5.0.1",
+		"webpack-dev-server": "^4.13.1",
+		"webpack-server": "^0.1.2"
 	},
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "lite-server"
+		"start": "webpack-dev-server",
+		"build": "webpack --config webpack.config.prod.js"
 	},
 	"author": "",
 	"license": "ISC",
