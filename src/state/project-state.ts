@@ -1,6 +1,5 @@
-import { Project, ProjectStatus } from "../models/project.js";
+import { Project, ProjectStatus } from "../models/project";
 
-// Project State Management
 type Listener<T> = (items: T[]) => void;
 
 class State<T> {
@@ -54,7 +53,5 @@ export class ProjectState extends State<Project> {
     }
 }
 
-// Globale Instanz
-// to garentiet to work always with the exact same object and we will only have 1 object all the time, in the entire application
 export const projectState = ProjectState.getInstace();
 
